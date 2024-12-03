@@ -49,11 +49,11 @@ func (r *report) isSafe() bool {
 		}
 
 		if expectIncreasingLevels {
-			if !isIncreased(previousLevel, level) {
+			if isDecreased(previousLevel, level) {
 				return false
 			}
 		} else {
-			if !isDecreased(previousLevel, level) {
+			if isIncreased(previousLevel, level) {
 				return false
 			}
 		}
@@ -102,4 +102,47 @@ func taskOne(inputList []string) {
 
 	fmt.Printf("%d reports of %d are safe\r\n", safeReports, totalReports)
 	pretty.PrintResult(safeReports, 2, 1)
+}
+
+func removeItem(slice []int, s int) []int {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func getDampenedReportVariants(rep report) []report {
+	var variants []report
+
+	for i := range len(rep.levels) {
+		tmp := make([]int, len(rep.levels))
+		copy(tmp, rep.levels)
+		variants = append(variants, report{
+			levels: removeItem(tmp, i),
+		})
+	}
+
+	return variants
+}
+
+func taskTwo(inputList []string) {
+	var safeReports int
+	var totalReports int
+	inpObj, err := convertInput(inputList)
+	errors.Check(err)
+
+	for _, report := range inpObj.reports {
+		if report.isSafe() {
+			safeReports++
+		} else {
+			for _, report := range getDampenedReportVariants(report) {
+				if report.isSafe() {
+					safeReports++
+					break
+				}
+			}
+		}
+
+		totalReports++
+	}
+
+	fmt.Printf("%d reports of %d are safe\r\n", safeReports, totalReports)
+	pretty.PrintResult(safeReports, 2, 2)
 }

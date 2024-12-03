@@ -11,3 +11,9 @@ func TestDayTwoTaskOne(t *testing.T) {
 	errors.Check(err)
 	taskOne(fileLines)
 }
+
+func TestDayTwoTaskTwo(t *testing.T) {
+	fileLines, err := files.ReadFileLines("input")
+	errors.Check(err)
+	taskTwo(fileLines)
+}
