@@ -21,3 +21,11 @@ func ReadFileLines(path string) (lines []string, err error) {
 
 	return fileLines, nil
 }
+
+func ReadFile(path string) ([]byte, error) {
+	dat, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return dat, err
+}
