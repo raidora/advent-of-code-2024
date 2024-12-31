@@ -68,20 +68,47 @@ func findDiagonalWordOccurrences(b [][]byte, word string) int {
 
 	for rID := range len(b) - len(word) + 1 {
 		for cID := range len(b[rID]) - len(word) + 1 {
-			// Scan left to right
+			// Scan up left to down right
 			var wdLR []byte
 			for lrID := range len(word) {
 				wdLR = append(wdLR, b[rID+lrID][cID+lrID])
 			}
 			occurrences += matchBothWays(wdLR, word)
 
-			// Scan right to left
+			// Scan up right to down left
 			var wdRL []byte
 			for rlID := range len(word) {
 				rlIDReverseCounter := int(math.Abs(float64(rlID - len(word) + 1)))
 				wdRL = append(wdRL, b[rID+rlID][cID+rlIDReverseCounter])
 			}
-			occurrences += matchBothWays(wdLR, word)
+			occurrences += matchBothWays(wdRL, word)
+		}
+	}
+	return occurrences
+}
+
+func findDiagonalMatchingWordOccurrences(b [][]byte, word string) int {
+	var occurrences int
+
+	for rID := range len(b) - len(word) + 1 {
+		for cID := range len(b[rID]) - len(word) + 1 {
+			// Scan up left to down right
+			var wdLR []byte
+			for lrID := range len(word) {
+				wdLR = append(wdLR, b[rID+lrID][cID+lrID])
+			}
+			matchOne := matchBothWays(wdLR, word)
+
+			// Scan up right to down left
+			var wdRL []byte
+			for rlID := range len(word) {
+				rlIDReverseCounter := int(math.Abs(float64(rlID - len(word) + 1)))
+				wdRL = append(wdRL, b[rID+rlID][cID+rlIDReverseCounter])
+			}
+			matchTwo := matchBothWays(wdRL, word)
+			if matchOne > 0 && matchTwo > 0 {
+				occurrences++
+			}
 		}
 	}
 	return occurrences
@@ -91,12 +118,14 @@ func taskOne(inputLines []string) {
 	sum := 0
 	chars := convertInput(inputLines)
 	sum += findHorizontalWordOccurrences(chars, "XMAS")
-	fmt.Println(sum)
 	sum += findVerticalWordOccurrences(chars, "XMAS")
-	fmt.Println(sum)
 	sum += findDiagonalWordOccurrences(chars, "XMAS")
 	fmt.Println(sum)
 }
 
 func taskTwo(inputLines []string) {
+	sum := 0
+	chars := convertInput(inputLines)
+	sum += findDiagonalMatchingWordOccurrences(chars, "MAS")
+	fmt.Println(sum)
 }
